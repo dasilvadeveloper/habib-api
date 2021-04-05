@@ -57,9 +57,19 @@ function allOk(bodyParams) {
 	let allOk = true;
 	allOkResult = [];
 
+	// validate country
+	if (typeof bodyParams.country != 'number' || !bodyParams.country) {
+		// set allOk to false
+		allOk = false;
+
+		allOkResult.push({
+			country: false,
+		});
+	}
+
 	// validate username
 	if (
-		typeof bodyParams.username != "string" ||
+		typeof bodyParams.username != 'string' ||
 		!bodyParams.username ||
 		!/^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
 			bodyParams.username
@@ -72,19 +82,87 @@ function allOk(bodyParams) {
 			username: false,
 		});
 	}
-	// } else {
-	// 	// VIR
-	// 	//if(User.checkUsername(bodyParams.username)){
-	// 	if (false) {
-	// 		// set allOk to false
-	// 		allOk = false;
 
-	// 		// push error msg to array
-	// 		allOkResult.push({
-	// 			username: false,
-	// 		});
-	// 	}
-	// }
+	// validate name
+	if (
+		typeof bodyParams.name != 'string' ||
+		!bodyParams.name ||
+		bodyParams.name.length > 40 ||
+		bodyParams.name.length < 2 ||
+		!/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/.test(
+			bodyParams.name
+		)
+	) {
+		// set allOk to false
+		allOk = false;
+
+		allOkResult.push({
+			name: false,
+		});
+	}
+
+	// validate surname
+	if (
+		typeof bodyParams.surname != 'string' ||
+		!bodyParams.surname ||
+		bodyParams.surname.length > 40 ||
+		bodyParams.surname.length < 2 ||
+		!/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/.test(
+			bodyParams.surname
+		)
+	) {
+		// set allOk to false
+		allOk = false;
+
+		allOkResult.push({
+			surname: false,
+		});
+	}
+
+	// validate date
+	if (!Date.parse(bodyParams.bornDate)) {
+		// set allOk to false
+		allOk = false;
+
+		allOkResult.push({
+			bornDate: false,
+		});
+	} else {
+		// if it is a valid date , convert it to date
+		bodyParams.bornDate = Date.parse(bodyParams.bornDate);
+	}
+
+	// validate phone number
+	if (bodyParams.phone) {
+		if (
+			typeof bodyParams.phone != 'number' ||
+			!/9[1236][0-9]{7}|2[1-9]{1,2}[0-9]{7}/.test(
+				bodyParams.phone
+			)
+		) {
+			// set allOk to false
+			allOk = false;
+
+			allOkResult.push({
+				phone: false,
+			});
+		}
+	}
+
+	// validate password
+	if (
+		typeof bodyParams.password != 'string' ||
+		!bodyParams.password ||
+		bodyParams.password.length > 30 ||
+		bodyParams.password.length < 8
+	) {
+		// set allOk to false
+		allOk = false;
+
+		allOkResult.push({
+			password: false,
+		});
+	}
 
 	// return the result
 	return allOk;
