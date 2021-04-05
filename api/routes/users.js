@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-let debug = true;
 let allOkResult = [];
 
 // No caso de um get all
@@ -16,7 +15,7 @@ router.get('/', (req, res, next) => {
 });
 
 // Handle post req
-router.post('/', (req, res, next) => {
+router.post('/',  (req, res, next) => {
 	// Validate user data
 	if (allOk(req.body)) {
 		// Create new user
@@ -32,15 +31,12 @@ router.post('/', (req, res, next) => {
 			req.body.password
 		);
 
-		if (debug) {
+		if (global.debug) {
 			// log user
 			console.log(user);
 		}
 
-		// Retorno
-		res.status(200).json({
-			message: 'Aluno quase inserido',
-		});
+		user.post(res) 
 	} else {
 		// return the result of the validations
 		res.status(200).json({
@@ -127,9 +123,6 @@ function allOk(bodyParams) {
 		allOkResult.push({
 			bornDate: false,
 		});
-	} else {
-		// if it is a valid date , convert it to date
-		bodyParams.bornDate = Date.parse(bodyParams.bornDate);
 	}
 
 	// validate phone number
@@ -162,6 +155,11 @@ function allOk(bodyParams) {
 		allOkResult.push({
 			password: false,
 		});
+	}
+
+	// validate image
+	if (!bodyParams.image) {
+		bodyParams.image = 'noimi'
 	}
 
 	// return the result

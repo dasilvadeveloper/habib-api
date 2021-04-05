@@ -1,5 +1,5 @@
-require("dotenv").config()
-
+const mysql = require('mysql2');
+require('dotenv').config();
 
 // dados da conexão
 const user = process.env.USER;
@@ -8,24 +8,28 @@ const db = process.env.DB;
 const host = process.env.HOST;
 
 async function connect() {
-
-    // verificar se a conn existe e o estado dela é diferente de desconectada
-    if(global.conn && global.conn.state !== 'disconnected')
-
-	// receber o promise do mysql2
-	const mysql = require('mysql2/promise');
+	// verificar se a conn existe e o estado dela é diferente de desconectada
+	if (global.conn && global.conn.state !== 'disconnected')
+		return global.conn;
 
 	// Conn string
-	const conn = await mysql.createConnection(
-		`mysql://${user}:${pass}@${host}:3306/${db}`
-	);
+	try {
+		const conn = await mysql.createConnection({
+			host: process.env.HOST,
+			user: process.env.USER,
+			password: process.env.PASS,
+			database: process.env.DB,
+		});
 
-    console.log('Conn established');
+		console.log('Conn established');
 
-    // passar a conn por referencia para a var global
-    global.conn = conn;
+		// passar a conn por referencia para a var global
+		global.conn = conn;
+
+		return conn;
+	} catch (err) {
+		console.log(err);
+	}
 }
 
-connect();
-
-module.exports = {};
+module.exports = {connect};
