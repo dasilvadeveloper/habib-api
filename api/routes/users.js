@@ -5,18 +5,40 @@ const db = require('../config/db');
 
 let allOkResult = [];
 
-// No caso de um get all
+// Handle get req
 router.get('/', (req, res, next) => {
-	// Retorno
-	res.status(200).json({
-		data: {
-			message: 'habib -> user -> get',
-		},
-	});
+	// Make get
+	db.fetch(User.name, undefined, undefined, undefined, undefined, res);
+});
+
+// Handle get by id
+router.get('/:userID', (req, res, next) => {
+	// retrieve data from the database
+	db.fetch(
+		User.name,
+		undefined,
+		`id=${req.params.userID}`,
+		undefined,
+		undefined,
+		res
+	);
+});
+
+// Handle get req whit params
+router.get('/:page/:resPerPage', (req, res, next) => {
+	// retrieve data from the database
+	db.fetch(
+		User.name,
+		undefined,
+		undefined,
+		req.params.page,
+		req.params.resPerPage,
+		res
+	);
 });
 
 // Handle post req
-router.post('/',  (req, res, next) => {
+router.post('/', (req, res, next) => {
 	// Validate user data
 	if (allOk(req.body)) {
 		// Create new user
@@ -38,7 +60,12 @@ router.post('/',  (req, res, next) => {
 		}
 
 		// Make post
-		db.post(User.name, user.getPostColumns(), user.getValues(), res) 
+		db.post(
+			User.name,
+			user.getPostColumns(),
+			user.getValues(),
+			res
+		);
 	} else {
 		// return the result of the validations
 		res.status(200).json({
@@ -51,7 +78,7 @@ router.post('/',  (req, res, next) => {
 /**
  * Function to validate all data from user
  */
- function allOk(bodyParams) {
+function allOk(bodyParams) {
 	// Set validations result to true and empty
 	let allOk = true;
 	allOkResult = [];
@@ -162,12 +189,12 @@ router.post('/',  (req, res, next) => {
 
 	// validate image
 	if (!bodyParams.image) {
-		bodyParams.image = 'default'
+		bodyParams.image = 'default';
 	}
 
 	// validate phone
 	if (!bodyParams.phone) {
-		bodyParams.phone = null
+		bodyParams.phone = null;
 	}
 
 	// return the result

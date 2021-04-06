@@ -25,7 +25,7 @@ async function connect() {
 }
 
 /**
- * Method to insert data
+ * function to insert data
  */
 async function post(table, columns, values, res) {
 	if (global.debug) {
@@ -56,4 +56,59 @@ async function post(table, columns, values, res) {
 	);
 }
 
-module.exports = { post };
+/**
+ *
+ * @param {TABLE} table
+ * @param {JOINS} joins
+ * @param {CONDITION} condition
+ * @param {PAGE} page
+ * @param {RESULTS PER PAGE} resPerPage
+ * @param {RESPONSE} res
+ */
+async function fetch(table, joins, condition, page, resPerPage, res) {
+	if (global.debug) {
+		console.log(`Table: ${table}`);
+		console.log(`Joins: ${joins}`);
+		console.log(`Condition: ${condition}`);
+		console.log(`Page: ${page}`);
+		console.log(`Results per page: ${resPerPage}`);
+		console.log(
+			`Query: SELECT * FROM 
+			${table}
+			${joins ? joins : ''} 
+			${condition ? ' WHERE ' + condition : ''}
+			${page ? 'LIMIT ' + (page - 1) * resPerPage + ', ' : ''}
+			${resPerPage ? resPerPage : ''}
+			`.trim()
+		);
+	}
+
+	// stablish the connection whit the database
+	const conn = await connect();
+
+	// prepare and execute the query
+	conn.query(
+		`SELECT * FROM 
+		${table}
+		${joins ? joins : ''} 
+		${condition ? ' WHERE ' + condition : ''}
+		${page ? 'LIMIT ' + (page - 1) * resPerPage + ', ' : ''}
+		${resPerPage ? resPerPage : ''}
+		`,
+		(err, results, fields) => {
+			if (err) {
+				// Return
+				res.json({
+					err,
+				});
+			} else {
+				// Return
+				res.json({
+					results: results,
+				});
+			}
+		}
+	);
+}
+
+module.exports = { post, fetch };
