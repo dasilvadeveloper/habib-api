@@ -41,8 +41,25 @@ class User {
 	 * function that returns columns to PATCH
 	 * @returns Values to insert an user
 	 */
-	getPatchValues() {
+	getPatchPreparedValues() {
 		return `CountryID = ?, Username = ?, Image = ?, Name = ?, Surname = ?, BornDate = ?, Phone = ?, Password = sha2(?,512)`;
+	}
+
+	/**
+	 * function that returns columns to PATCH
+	 * @returns Values to insert an user
+	 */
+	getPatchValues() {
+		return [
+			this.country,
+			`${this.username}`,
+			`${this.image}`,
+			`${this.name}`,
+			`${this.surname}`,
+			`${this.bornDate}`,
+			this.phone,
+			`${this.password}`,
+		];
 	}
 }
 

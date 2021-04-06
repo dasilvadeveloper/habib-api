@@ -104,6 +104,7 @@ router.patch('/:userId', (req, res, next) => {
 		// Make post
 		db.patch(
 			User.name,
+			user.getPatchPreparedValues(),
 			user.getPatchValues(),
 			user.id,
 			res

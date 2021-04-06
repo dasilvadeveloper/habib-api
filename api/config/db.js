@@ -115,13 +115,15 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
  *
  * @param {TABLE} table
  * @param {VALUES} values
+ * @param {NEW DATA} newData
  * @param {REGISTER ID TO UPDATE} id
  * @param {RESPONSE} res
  */
- async function patch(table, values, id, res) {
+ async function patch(table, values, newData, id, res) {
 	if (global.debug) {
 		console.log(`Table: ${table}`);
 		console.log(`Values: ${values}`);
+		console.log(`Data: ${newData}`);
 		console.log(`ID: ${id}`);
 	}
 
@@ -134,7 +136,7 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 		${values}
 		WHERE id = ${id}
 		`,
-		[1, 'habib', 'default', 'Mustafaa', 'Habib', '2001-12-12',962076826, 'demodemo']
+		newData
 		,
 		(err, results, fields) => {
 			if (err) {
