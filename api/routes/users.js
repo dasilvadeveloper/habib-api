@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const db = require('../config/db');
 
 let allOkResult = [];
 
@@ -36,7 +37,8 @@ router.post('/',  (req, res, next) => {
 			console.log(user);
 		}
 
-		user.post(res) 
+		// Make post
+		db.post(User.name, user.getPostColumns(), user.getValues(), res) 
 	} else {
 		// return the result of the validations
 		res.status(200).json({
@@ -45,10 +47,11 @@ router.post('/',  (req, res, next) => {
 	}
 });
 
+//#region validations
 /**
  * Function to validate all data from user
  */
-function allOk(bodyParams) {
+ function allOk(bodyParams) {
 	// Set validations result to true and empty
 	let allOk = true;
 	allOkResult = [];
@@ -159,11 +162,17 @@ function allOk(bodyParams) {
 
 	// validate image
 	if (!bodyParams.image) {
-		bodyParams.image = 'noimi'
+		bodyParams.image = 'default'
+	}
+
+	// validate phone
+	if (!bodyParams.phone) {
+		bodyParams.phone = null
 	}
 
 	// return the result
 	return allOk;
 }
+//#endregion
 
 module.exports = router;

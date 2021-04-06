@@ -1,5 +1,3 @@
-const db = require('../config/db');
-
 class User {
 	constructor(
 		id,
@@ -24,76 +22,19 @@ class User {
 	}
 
 	/**
-	 * Method to post users
+	 * function that returns columns to insert an user
+	 * @returns Columns to insert an user
 	 */
-	async post(res) {
-		if (global.debug) {
-			// log user
-			console.log(`INSERT INTO user
-			(CountryID,
-			Username,
-			Image,
-			Name,
-			Surname,
-			BornDate,
-			Phone,
-			Password)
-			VALUES
-			(
-			${this.country},
-			'${this.username}',
-			'${this.image}',
-			'${this.name}',
-			'${this.surname}',
-			'${this.bornDate}',
-			${this.phone},
-			sha(512, '${this.password}')
-			)`);
-		}
+	getPostColumns() {
+		return `(CountryID, Username, Image, Name, Surname, BornDate, Phone, Password)`;
+	}
 
-		// connect to database
-		const conn = await db.connect();
-
-		// execute query
-		conn.query(
-			`INSERT INTO user
-			(CountryID,
-			Username,
-			Image,
-			Name,
-			Surname,
-			BornDate,
-			Phone,
-			Password)
-			VALUES
-			(
-			${this.country},
-			'${this.username}',
-			'${this.image}',
-			'${this.name}',
-			'${this.surname}',
-			'${this.bornDate}',
-			${this.phone},
-			'${this.password}'
-			)`,
-			(err, results, fields) => {
-				if (err) {
-					// Retorno
-					res.json({
-						username_error: {
-							type: 'ER_DUP_ENTRY',
-							description:
-								'Username duplicated',
-						},
-					});
-				} else {
-					// Retorno
-					res.json({
-						message: "Success",
-					});
-				}
-			}
-		);
+	/**
+	 * function that returns columns to insert an user
+	 * @returns Values to insert an user
+	 */
+	getValues() {
+		return `(${this.country}, '${this.username}', '${this.image}', '${this.name}', '${this.surname}', '${this.bornDate}', ${this.phone}, sha2('${this.password}',512))`;
 	}
 }
 

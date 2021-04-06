@@ -1,7 +1,7 @@
 // Importar o express
 const express = require("express");
 
-global.debug = false;
+global.debug = true;
 
 // Criar var app : express
 const app = express();

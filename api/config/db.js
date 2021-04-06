@@ -1,12 +1,6 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-// dados da conexão
-const user = process.env.USER;
-const pass = process.env.PASS;
-const db = process.env.DB;
-const host = process.env.HOST;
-
 async function connect() {
 	// verificar se a conn existe e o estado dela é diferente de desconectada
 	if (global.conn && global.conn.state !== 'disconnected')
@@ -21,8 +15,6 @@ async function connect() {
 			database: process.env.DB,
 		});
 
-		console.log('Conn established');
-
 		// passar a conn por referencia para a var global
 		global.conn = conn;
 
@@ -32,4 +24,36 @@ async function connect() {
 	}
 }
 
-module.exports = {connect};
+/**
+ * Method to insert data
+ */
+async function post(table, columns, values, res) {
+	if (global.debug) {
+		console.log(`Table: ${table}`);
+		console.log(`Columns: ${columns}`);
+		console.log(`Values: ${values}`);
+	}
+
+	// stablish the connection whit the database
+	const conn = await connect();
+
+	// post the data
+	conn.query(
+		`INSERT INTO ${table} ${columns} VALUES ${values}`,
+		(err, results, fields) => {
+			if (err) {
+				// Retorno
+				res.json({
+					err,
+				});
+			} else {
+				// Retorno
+				res.json({
+					message: results,
+				});
+			}
+		}
+	);
+}
+
+module.exports = { post };
