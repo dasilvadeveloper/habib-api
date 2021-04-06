@@ -36,6 +36,14 @@ class User {
 	getValues() {
 		return `(${this.country}, '${this.username}', '${this.image}', '${this.name}', '${this.surname}', '${this.bornDate}', ${this.phone}, sha2('${this.password}',512))`;
 	}
+
+	/**
+	 * function that returns columns to PATCH
+	 * @returns Values to insert an user
+	 */
+	getPatchValues() {
+		return `CountryID = ?, Username = ?, Image = ?, Name = ?, Surname = ?, BornDate = ?, Phone = ?, Password = sha2(?,512)`;
+	}
 }
 
 module.exports = User;

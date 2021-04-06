@@ -5,13 +5,14 @@ const db = require('../config/db');
 
 let allOkResult = [];
 
-// Handle get req
+//#region GET
+// GET ALL
 router.get('/', (req, res, next) => {
 	// Make get
 	db.fetch(User.name, undefined, undefined, undefined, undefined, res);
 });
 
-// Handle get by id
+// GET BY ID
 router.get('/:userID', (req, res, next) => {
 	// retrieve data from the database
 	db.fetch(
@@ -24,7 +25,7 @@ router.get('/:userID', (req, res, next) => {
 	);
 });
 
-// Handle get req whit params
+// GET ALL WHIT PAGINATION
 router.get('/:page/:resPerPage', (req, res, next) => {
 	// retrieve data from the database
 	db.fetch(
@@ -36,7 +37,9 @@ router.get('/:page/:resPerPage', (req, res, next) => {
 		res
 	);
 });
+//#endregion
 
+//#region POST
 // Handle post req
 router.post('/', (req, res, next) => {
 	// Validate user data
@@ -73,6 +76,46 @@ router.post('/', (req, res, next) => {
 		});
 	}
 });
+//#endregion
+
+//#region PATCH
+// Handle patch req
+router.patch('/:userId', (req, res, next) => {
+	// Validate user data
+	if (allOk(req.body)) {
+		// Create new user
+		let user = new User(
+			req.params.userId,
+			req.body.country,
+			req.body.username,
+			req.body.image,
+			req.body.name,
+			req.body.surname,
+			req.body.bornDate,
+			req.body.phone,
+			req.body.password
+		);
+
+		if (global.debug) {
+			// log user
+			console.log(user);
+		}
+
+		// Make post
+		db.patch(
+			User.name,
+			user.getPatchValues(),
+			user.id,
+			res
+		);
+	} else {
+		// return the result of the validations
+		res.status(200).json({
+			message: allOkResult,
+		});
+	}
+});
+//#endregion
 
 //#region validations
 /**

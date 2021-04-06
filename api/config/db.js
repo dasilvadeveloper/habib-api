@@ -111,4 +111,45 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 	);
 }
 
-module.exports = { post, fetch };
+/**
+ *
+ * @param {TABLE} table
+ * @param {VALUES} values
+ * @param {REGISTER ID TO UPDATE} id
+ * @param {RESPONSE} res
+ */
+ async function patch(table, values, id, res) {
+	if (global.debug) {
+		console.log(`Table: ${table}`);
+		console.log(`Values: ${values}`);
+		console.log(`ID: ${id}`);
+	}
+
+	// stablish the connection whit the database
+	const conn = await connect();
+
+	// prepare and execute the query
+	conn.query(`
+		UPDATE ${table} SET 
+		${values}
+		WHERE id = ${id}
+		`,
+		[1, 'habib', 'default', 'Mustafaa', 'Habib', '2001-12-12',962076826, 'demodemo']
+		,
+		(err, results, fields) => {
+			if (err) {
+				// Return
+				res.json({
+					err,
+				});
+			} else {
+				// Return
+				res.json({
+					results: results,
+				});
+			}
+		}
+	);
+}
+
+module.exports = { post, fetch, patch };
