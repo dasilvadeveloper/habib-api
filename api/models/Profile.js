@@ -18,8 +18,8 @@ class Profile {
 	 * @returns Values to insert
 	 */
 	getValues() {
-		return `(${this.userTypeID}, '${this.userID}', '${this.date}')`;
+		return `(${this.userTypeID}, ${this.userID}, '${this.date}')`;
 	}
 }
 
-module.exports = User;
+module.exports = Profile;

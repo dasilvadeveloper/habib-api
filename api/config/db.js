@@ -1,6 +1,10 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
+/**
+ * Function to connect to database
+ * @returns Conection
+ */
 async function connect() {
 	// verificar se a conn existe e o estado dela é diferente de desconectada
 	if (global.conn && global.conn.state !== 'disconnected')
@@ -24,6 +28,7 @@ async function connect() {
 	}
 }
 
+//#region
 /**
  * function to insert data
  */
@@ -44,7 +49,7 @@ async function post(table, columns, values, res) {
 			if (err) {
 				// Retorno
 				res.json({
-					err,
+					err: err.code,
 				});
 			} else {
 				// Retorno
@@ -55,7 +60,9 @@ async function post(table, columns, values, res) {
 		}
 	);
 }
+//#endregion
 
+//#region Fetch
 /**
  *
  * @param {TABLE} table
@@ -110,7 +117,9 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 		}
 	);
 }
+//#endregion
 
+//#region Patch
 /**
  *
  * @param {TABLE} table
@@ -119,7 +128,7 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
  * @param {REGISTER ID TO UPDATE} id
  * @param {RESPONSE} res
  */
- async function patch(table, values, newData, id, res) {
+async function patch(table, values, newData, id, res) {
 	if (global.debug) {
 		console.log(`Table: ${table}`);
 		console.log(`Values: ${values}`);
@@ -131,13 +140,13 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 	const conn = await connect();
 
 	// prepare and execute the query
-	conn.query(`
+	conn.query(
+		`
 		UPDATE ${table} SET 
 		${values}
 		WHERE id = ${id}
 		`,
-		newData
-		,
+		newData,
 		(err, results, fields) => {
 			if (err) {
 				// Return
@@ -153,5 +162,6 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 		}
 	);
 }
+//#endregion
 
 module.exports = { post, fetch, patch };

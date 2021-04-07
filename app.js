@@ -10,12 +10,14 @@ const bodyParser = require("body-parser");
 
 // Caminho até a API dos alunos
 const userRoutes = require("./api/routes/users");
+const profileRoutes = require("./api/routes/profiles");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Definir que se o link terminar com /students o caminho será o que estiver na ver studentsRoutes
+// define routes
 app.use("/users", userRoutes);
+app.use("/profiles", profileRoutes);
 
 //
 app.use((req, res, next) => {
