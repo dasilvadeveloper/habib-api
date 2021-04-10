@@ -1,10 +1,12 @@
 // Importar o express
 const express = require("express");
+const cors = require('cors');
 
 global.debug = true;
 
 // Criar var app : express
 const app = express();
+app.use(cors())
 
 const bodyParser = require("body-parser");
 
