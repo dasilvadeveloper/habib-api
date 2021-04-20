@@ -109,10 +109,61 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 					err,
 				});
 			} else {
+ 
+				// Return
+				res.json(results);
+			}
+		}
+	);
+}
+
+/**
+ *
+ * @param {TABLE} table
+ * @param {JOINS} joins
+ * @param {CONDITION} condition
+ * @param {PAGE} page
+ * @param {RESULTS PER PAGE} resPerPage
+ * @param {RESPONSE} res
+ */
+ async function count(table, joins, condition, page, resPerPage, res) {
+	if (global.debug) {
+		console.log(`Table: ${table}`);
+		console.log(`Joins: ${joins}`);
+		console.log(`Condition: ${condition}`);
+		console.log(`Page: ${page}`);
+		console.log(`Results per page: ${resPerPage}`);
+		console.log(
+			`Query: SELECT count(*) FROM 
+			${table}
+			${joins ? joins : ''} 
+			${condition ? ' WHERE ' + condition : ''}
+			${page ? 'LIMIT ' + (page - 1) * resPerPage + ', ' : ''}
+			${resPerPage ? resPerPage : ''}
+			`.trim()
+		);
+	}
+
+	// stablish the connection whit the database
+	const conn = await connect();
+
+	// prepare and execute the query
+	conn.query(
+		`SELECT count(*) FROM 
+		${table}
+		${joins ? joins : ''} 
+		${condition ? ' WHERE ' + condition : ''}
+		`,
+		(err, results, fields) => {
+			if (err) {
 				// Return
 				res.json({
-					results: results,
+					err,
 				});
+			} else {
+ 
+				// Return
+				res.json(results);
 			}
 		}
 	);
@@ -164,4 +215,4 @@ async function patch(table, values, newData, id, res) {
 }
 //#endregion
 
-module.exports = { post, fetch, patch };
+module.exports = { post, fetch, patch, count };

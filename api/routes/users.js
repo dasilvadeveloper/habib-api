@@ -13,16 +13,29 @@ router.get('/', (req, res, next) => {
 });
 
 // GET BY ID
-router.get('/:userID', (req, res, next) => {
-	// retrieve data from the database
-	db.fetch(
-		User.name,
-		undefined,
-		`id=${req.params.userID}`,
-		undefined,
-		undefined,
-		res
-	);
+router.get('/:operation', (req, res, next) => {
+	
+	if (!isNaN(Number.parseInt(req.params.operation))) {
+		// retrieve data from the database
+		db.fetch(
+			User.name,
+			undefined,
+			`id=${req.params.operation}`,
+			undefined,
+			undefined,
+			res
+		);
+	} else {
+		// retrieve data from the database
+		db.count(
+			User.name,
+			undefined,
+			undefined,
+			req.params.page,
+			req.params.resPerPage,
+			res
+		);
+	}
 });
 
 // GET ALL WHIT PAGINATION
