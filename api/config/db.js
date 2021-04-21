@@ -149,7 +149,7 @@ async function fetch(table, joins, condition, page, resPerPage, res) {
 
 	// prepare and execute the query
 	conn.query(
-		`SELECT count(*) FROM 
+		`SELECT count(*) as count FROM 
 		${table}
 		${joins ? joins : ''} 
 		${condition ? ' WHERE ' + condition : ''}
